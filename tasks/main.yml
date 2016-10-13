@@ -1,0 +1,12 @@
+---
+
+- name: "Install Windows updates."
+  win_updates:
+    category_names: "{{ win_updates_category_names }}"
+  register: win_updates_result
+
+- name: "Reboot when updates installed."
+  win_reboot:
+    shutdown_timeout_sec: 3600
+    reboot_timeout_sec: 3600
+  when: win_updates_result.reboot_required == True and win_updates_reboot
