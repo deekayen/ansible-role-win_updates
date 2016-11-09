@@ -4,9 +4,26 @@
   win_updates:
     category_names: "{{ win_updates_category_names }}"
   register: win_updates_result
+  failed_when: win_updates_result.failed and win_updates_reboot == False
+
+- block:
+  # Attempting some error handling.
+  - name: "Reboot Windows to re-try update installation."
+    win_reboot:
+      shutdown_timeout_sec: 3600
+      reboot_timeout_sec: 3600
+    when: win_updates_result.error is defined and win_updates_result.error == "A reboot is required before more updates can be installed."
+
+    # Let it fail this time if reboot didn't work.
+  - name: "Install Windows updates again."
+    win_updates:
+      category_names: "{{ win_updates_category_names }}"
+    register: win_updates_result
+
+  when: win_updates_reboot and win_updates_result.failed is defined and win_updates_result.failed
 
 - name: "Reboot when updates installed."
   win_reboot:
     shutdown_timeout_sec: 3600
     reboot_timeout_sec: 3600
-  when: win_updates_result.reboot_required == True and win_updates_reboot
+  when: win_updates_result.reboot_required and win_updates_reboot
