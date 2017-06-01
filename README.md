@@ -1,7 +1,7 @@
 Windows Updates
 ===============
 
-Install Windows updates.
+Install Microsoft Windows updates.
 
 Requirements
 ------------
@@ -25,7 +25,11 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - { role: deekayen.win_updates, win_updates_reboot: true }
+         - role: deekayen.win_updates
+           win_updates_reboot: true
+           win_updates_category_names:
+             - "CriticalUpdates"
+             - "SecurityUpdates"
 
 License
 -------
