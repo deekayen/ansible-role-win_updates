@@ -37,3 +37,15 @@
   when:
     - win_updates_result.reboot_required is defined
     - win_updates_result.reboot_required
+  register: reboot_status
+
+- debug:
+    msg: |
+      {{ win_updates_result.installed_update_count }} updates were installed on {{ inventory_hostname }}.
+      The updates installed were:
+
+      {% for key, value in win_updates_result.updates.iteritems() %}
+        - {{ value.title }}
+      {% endfor %}
+      {{ win_updates_result.failed_update_count }} updates failed to install.
+      It took {{ reboot_status.elapsed / 60 }} minutes for the machine to reboot.
