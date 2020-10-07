@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/deekayen/ansible-role-win_updates.svg?branch=main)](https://travis-ci.org/deekayen/ansible-role-win_updates)  [![Platforms](http://img.shields.io/badge/platforms-windows-lightgrey.svg?style=flat)](#)
+
 Windows Updates
 ===============
 
@@ -25,11 +27,11 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - role: deekayen.win_updates
-           win_updates_reboot: true
-           win_updates_category_names:
-             - "CriticalUpdates"
-             - "SecurityUpdates"
+        - role: deekayen.win_updates
+          win_updates_reboot: true
+          win_updates_category_names:
+            - "CriticalUpdates"
+            - "SecurityUpdates"
 
 License
 -------

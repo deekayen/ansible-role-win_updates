@@ -1,25 +1,13 @@
 ---
 
-dist: trusty
+dist: focal
 language: python
-python: "2.7"
-
-sudo: false
-
-# Install ansible.
-addons:
-  apt:
-    packages:
-    - python-pip
-
-install:
-  - pip install ansible-review
 
 before_script:
-  - ansible-review --version
+  - ansible-lint --version
 
 script:
-  - git ls-files | grep -Ei '^[^[:punct:]].+.(yaml|yml)$' | xargs ansible-review -q
+  - ansible-lint .
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/

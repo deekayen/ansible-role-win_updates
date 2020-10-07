@@ -1,12 +1,20 @@
+---
+
 galaxy_info:
+  role_name: win_updates
   author: David Norman
   description: Install Windows updates.
   license: BSD
   min_ansible_version: 2.0
+
+  github_branch: main
+  issue_tracker_url: https://github.com/deekayen/ansible-role-win_updates/issues
+
   platforms:
-  - name: Windows
-    versions:
-    - all
+    - name: Windows
+      versions:
+        - all
+
   galaxy_tags:
     - windows
     - security
