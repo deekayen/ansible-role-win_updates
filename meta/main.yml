@@ -2,8 +2,9 @@
 
 galaxy_info:
   role_name: win_updates
+  namespace: deekayen
   author: David Norman
-  description: Install Windows updates.
+  description: Install Microsoft Windows updates.
   license: BSD
   min_ansible_version: 2.0
 

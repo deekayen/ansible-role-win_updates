@@ -1,8 +1,9 @@
 ---
 
-- repo: https://github.com/ansible/ansible-lint.git
-  sha: v4.3.5
-  hooks:
-    - id: ansible-lint
-      files: \.(yaml|yml)$
-      args: [--exclude=/Users/deekayen/.ansible]
+repos:
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v5.0.12
+    hooks:
+      - id: ansible-lint
+        files: \.(yaml|yml)$
+        args: [--exclude=/Users/deekayen/.ansible]

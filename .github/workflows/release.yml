@@ -1,0 +1,36 @@
+---
+
+name: Release
+'on':
+  push:
+    tags:
+      - '*'
+
+defaults:
+  run:
+    working-directory: 'deekayen.win_updates'
+
+jobs:
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'deekayen.win_updates'
+
+      - name: Set up Python 3.
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible.
+        run: pip3 install ansible-base
+
+      - name: GitHub Environment Variables Action
+        uses: FranzDiebold/github-env-vars-action@v2.3.0
+
+      - name: Trigger a new import on Galaxy.
+        run: ansible-galaxy role import --branch $CI_REF_NAME --api-key ${{ secrets.GALAXY_API_KEY }} $CI_REPOSITORY_OWNER $CI_REPOSITORY_NAME

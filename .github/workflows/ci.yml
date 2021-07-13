@@ -1,0 +1,47 @@
+---
+
+name: CI
+'on':
+  pull_request:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: 'deekayen.win_updates'
+
+jobs:
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'deekayen.win_updates'
+
+      - name: Install test dependencies.
+        run: python -m pip install --user ansible ansible-lint
+
+      - name: Lint ansible.
+        run: ansible-lint
+
+  syntax:
+    name: Syntax check
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+        with:
+          path: 'deekayen.win_updates'
+
+      - name: Install test dependencies.
+        run: python -m pip install --user ansible
+
+      - name: Create ansible.cfg with correct roles_path
+        run: printf '[defaults]\nroles_path=../' >ansible.cfg
+
+      - name: Check syntax.
+        run: ansible-playbook tests/test.yml -i tests/inventory --syntax-check
