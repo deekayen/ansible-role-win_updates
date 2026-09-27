@@ -1,37 +1,41 @@
 ---
+- name: Validate role variables.
+  ansible.builtin.import_tasks: assert.yml
+  tags:
+    - always
 
 - name: Install Windows updates.
-  win_updates:
+  ansible.windows.win_updates:
     category_names: "{{ win_updates_category_names }}"
   register: win_updates_result
   failed_when:
     - win_updates_result.failed is defined
     - win_updates_result.failed
-    - not win_updates_reboot
+    - not win_updates_reboot | bool
 
-- block:
-  # Attempting some error handling.
-  - name: Reboot Windows to re-try update installation.
-    win_reboot:
-      shutdown_timeout_sec: 3600
-      reboot_timeout_sec: 3600
-    # Let it fail this time if reboot didn't work.
-    when:
-      - win_updates_result.error is defined
-      - win_updates_result.error == "A reboot is required before more updates can be installed."
-
-  - name: Install Windows updates again.
-    win_updates:
-      category_names: "{{ win_updates_category_names }}"
-    register: win_updates_result
-
+- name: Retry the updates after a reboot.
   when:
-    - win_updates_reboot
+    - win_updates_reboot | bool
     - win_updates_result.failed is defined
     - win_updates_result.failed
+  block:
+    # Attempting some error handling.
+    - name: Reboot Windows to re-try update installation.
+      ansible.windows.win_reboot:
+        shutdown_timeout_sec: 3600
+        reboot_timeout_sec: 3600
+      # Let it fail this time if reboot didn't work.
+      when:
+        - win_updates_result.error is defined
+        - win_updates_result.error == "A reboot is required before more updates can be installed."
+
+    - name: Install Windows updates again.
+      ansible.windows.win_updates:
+        category_names: "{{ win_updates_category_names }}"
+      register: win_updates_result
 
 - name: Reboot when updates installed.
-  win_reboot:
+  ansible.windows.win_reboot:
     shutdown_timeout_sec: 3600
     reboot_timeout_sec: 3600
   when:
@@ -40,13 +44,13 @@
   register: reboot_status
 
 - name: Print the update summary.
-  debug:
+  ansible.builtin.debug:
     msg: |
       {{ win_updates_result.installed_update_count }} updates were installed on {{ inventory_hostname }}.
       The updates installed were:
 
-      {% for key, value in win_updates_result.updates.iteritems() %}
-        - {{ value.title }}
+      {% for update in (win_updates_result.updates | default({})).values() %}
+        - {{ update.title }}
       {% endfor %}
       {{ win_updates_result.failed_update_count }} updates failed to install.
-      It took {{ reboot_status.elapsed / 60 }} minutes for the machine to reboot.
+      It took {{ (reboot_status.elapsed | default(0)) / 60 }} minutes for the machine to reboot.

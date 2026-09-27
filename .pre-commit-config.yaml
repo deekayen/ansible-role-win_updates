@@ -1,9 +1,24 @@
 ---
-
 repos:
-  - repo: https://github.com/ansible/ansible-lint.git
-    rev: v5.0.12
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.38.0
+    hooks:
+      - id: yamllint
+
+  - repo: https://github.com/PyCQA/flake8
+    rev: 7.4.1
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.9.0
     hooks:
       - id: ansible-lint
-        files: \.(yaml|yml)$
-        args: [--exclude=/Users/deekayen/.ansible]
+        args: [--profile, production]

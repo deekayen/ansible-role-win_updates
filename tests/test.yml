@@ -1,7 +1,7 @@
 ---
-
-- hosts: localhost
-  remote_user: root
+- name: Apply the win_updates role for a syntax check.
+  hosts: localhost
+  gather_facts: false
 
   roles:
-    - deekayen.win_updates
+    - role: deekayen.win_updates

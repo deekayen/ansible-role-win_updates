@@ -1,0 +1,25 @@
+---
+argument_specs:
+  main:
+    short_description: Install Microsoft Windows updates.
+    description:
+      - Installs Windows updates in the chosen categories, retries once after
+        a reboot when win_updates_reboot is true, reboots when updates
+        require it, and prints a summary.
+    author:
+      - David Norman
+    options:
+      win_updates_category_names:
+        type: list
+        elements: str
+        default:
+          - CriticalUpdates
+          - SecurityUpdates
+          - UpdateRollups
+        description: Update categories to install.
+      win_updates_reboot:
+        type: bool
+        default: false
+        description: >-
+          Reboot and retry when the first install fails because a reboot is
+          pending, instead of failing.

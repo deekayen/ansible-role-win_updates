@@ -1,14 +1,14 @@
 ---
+# This workflow requires a GALAXY_API_KEY secret present in the GitHub
+# repository or organization.
+#
+# See: https://github.com/marketplace/actions/publish-ansible-role-to-galaxy
 
 name: Release
 'on':
   push:
     tags:
       - '*'
-
-defaults:
-  run:
-    working-directory: 'deekayen.win_updates'
 
 jobs:
 
@@ -17,20 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
-        with:
-          path: 'deekayen.win_updates'
+        uses: actions/checkout@v4
 
       - name: Set up Python 3.
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
       - name: Install Ansible.
-        run: pip3 install ansible-base
-
-      - name: GitHub Environment Variables Action
-        uses: FranzDiebold/github-env-vars-action@v2.3.0
+        run: pip3 install ansible-core
 
       - name: Trigger a new import on Galaxy.
-        run: ansible-galaxy role import --branch $CI_REF_NAME --api-key ${{ secrets.GALAXY_API_KEY }} $CI_REPOSITORY_OWNER $CI_REPOSITORY_NAME
+        run: >-
+          ansible-galaxy role import --api-key ${{ secrets.GALAXY_API_KEY }}
+          $(echo ${{ github.repository }} | cut -d/ -f1)
+          $(echo ${{ github.repository }} | cut -d/ -f2)

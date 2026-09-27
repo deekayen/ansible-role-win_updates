@@ -1,0 +1,27 @@
+---
+- name: Assert win_updates_category_names lists known update categories.
+  ansible.builtin.assert:
+    that:
+      - win_updates_category_names | length > 0
+      - win_updates_category_names | difference(win_updates_valid_categories) | length == 0
+    fail_msg: >-
+      win_updates_category_names must be a non-empty list drawn from
+      {{ win_updates_valid_categories | join(', ') }}, got:
+      {{ win_updates_category_names }}
+    quiet: true
+  vars:
+    win_updates_valid_categories:
+      - '*'
+      - Application
+      - Connectors
+      - CriticalUpdates
+      - DefinitionUpdates
+      - DeveloperKits
+      - FeaturePacks
+      - Guidance
+      - SecurityUpdates
+      - ServicePacks
+      - Tools
+      - UpdateRollups
+      - Updates
+      - Upgrades

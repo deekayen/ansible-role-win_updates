@@ -1,4 +1,3 @@
 ---
-
 win_updates_category_names: ['CriticalUpdates', 'SecurityUpdates', 'UpdateRollups']
 win_updates_reboot: false
